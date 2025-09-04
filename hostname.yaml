@@ -1,0 +1,11 @@
+---
+- name: Eseguire il comando hostname
+  hosts: all
+  tasks:
+    - name: Eseguire hostname e registrare l'output
+      ansible.builtin.command: hostname
+      register: hostname_output
+
+    - name: Stampare l'hostname
+      ansible.builtin.debug:
+        var: hostname_output.stdout
