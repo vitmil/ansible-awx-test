@@ -1,0 +1,13 @@
+---
+- name: Verifica hostname
+  hosts: all
+  tasks:
+    - name: Eseguire il comando hostname e registrare l'output
+      ansible.builtin.command: hostname
+      register: hostname_result
+
+    - name: Verificare se l'hostname corrisponde a "fedora40"
+      ansible.builtin.assert:
+        that:
+          - hostname_result.stdout == "fedora40"
+      when: hostname_result.rc == 0
