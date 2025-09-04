@@ -1,0 +1,7 @@
+---
+- name: Stampa Hello Linux
+  hosts: all
+  tasks:
+    - name: Stampa un messaggio
+      ansible.builtin.debug:
+        msg: "Hello Linux!"
