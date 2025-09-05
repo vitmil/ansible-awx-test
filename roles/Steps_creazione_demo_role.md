@@ -79,7 +79,7 @@ Ora definiamo i task che il ruolo eseguirà. I task vengono scritti nel file `ta
 
 -----
 
-### 4\. Creazione del Playbook
+### 4\. Creazione del Playbook 
 
 Infine, crea un semplice playbook che esegua il tuo ruolo.
 
@@ -90,8 +90,8 @@ Infine, crea un semplice playbook che esegua il tuo ruolo.
 
 ```yaml
 ---
-- name: Esecuzione del ruolo di demo
-  hosts: localhost
+- name: Playbook che richiama il ruolo (versione 1)
+  hosts: all
   gather_facts: false
   tasks:
     - name: Esecuzione del ruolo
@@ -99,8 +99,52 @@ Infine, crea un semplice playbook che esegua il tuo ruolo.
         name: my_demo_role
 ```
 
-  * `hosts: localhost` indica che il playbook verrà eseguito sulla macchina locale, il che è perfetto per un test di demo.
-  * `ansible.builtin.include_role` è il modulo che esegue il ruolo specificato dal nome.
+
+✅ Caratteristiche della version 1 con `ansible.builtin.include_role:`:
+
+Richiami il ruolo dentro la sezione tasks.
+
+Puoi includere il ruolo condizionalmente, con when:, oppure passare variabili in quel punto.
+
+È più flessibile: puoi decidere dove nel flusso delle task includere il ruolo.
+
+Esempio:
+```yaml
+- name: Esegui ruolo solo su Fedora
+  ansible.builtin.include_role:
+    name: my_demo_role
+  when: ansible_distribution == "Fedora"
+```
+👉 Utile se vuoi controllo granulare.
+
+
+Oppure anche
+
+```yaml
+- name: Playbook che richiama il ruolo (versione 2)
+  hosts: all
+  become: yes
+  roles:
+    - my_demo_role
+```
+
+✅ Caratteristiche:
+
+Sintassi più semplice e dichiarativa.
+
+Esegui il ruolo sempre, subito dopo il gather_facts e prima di qualsiasi task definita nella stessa play.
+
+Non hai la flessibilità di “metterlo in mezzo” ad altre task.
+
+👉 Utile se vuoi un playbook lineare, tipo “questo play usa questi ruoli”.
+
+
+🔹 In sintesi
+
+Usa roles: → quando vuoi dichiarare che una play è composta da uno o più ruoli (pulito, leggibile).
+
+Usa include_role → quando ti serve più controllo (condizioni, ordine specifico dentro altre task, passaggio variabili in quel punto).
+
 
 -----
 
@@ -109,10 +153,8 @@ Infine, crea un semplice playbook che esegua il tuo ruolo.
 Per eseguire il playbook, usa il comando `ansible-playbook`.
 
 ```bash
-ansible-playbook -i localhost, playbook.yml
+ansible-playbook -i <inventory_file>, playbook.yml
 ```
-
-L'opzione `-i localhost,` serve a definire l'inventario, specificando che l'host di destinazione è la macchina locale.
 
 Alla fine dell'esecuzione, se tutto è andato a buon fine, puoi verificare che la directory e il file siano stati creati correttamente:
 
@@ -122,3 +164,7 @@ cat /tmp/created_by_ansible_role/demo_file.txt
 ```
 
 Dovresti vedere la cartella e il file `demo_file.txt` con il contenuto "Hello from ansible role\!".
+
+
+### 6\. Esecuzione per Ansible AWX.
+Il Playbook che chiama il ruolo dovrà risiedere nella directory root del repo, dove sono presenti tutti gli altri playbook.
