@@ -1,3 +1,12 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for my_demo_role
+- name: Crea la directory di destinazione
+  ansible.builtin.file:
+    path: /tmp/created_by_ansible_role
+    state: directory
+    mode: '0755'
+
+- name: Copia il file di demo nella nuova directory
+  ansible.builtin.copy:
+    src: demo_file.txt
+    dest: /tmp/created_by_ansible_role/demo_file.txt
+    mode: '0644'
