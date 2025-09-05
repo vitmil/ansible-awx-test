@@ -1,0 +1,8 @@
+---
+- name: Esecuzione del ruolo di demo
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Esecuzione del ruolo
+      ansible.builtin.include_role:
+        name: my_demo_role
