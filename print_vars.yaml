@@ -1,0 +1,19 @@
+---
+- name: Print variable names and values
+  hosts: localhost
+  vars:
+    var_1: "I'm the value of variable 1"
+    var_2: "I'm the value of variable 2"
+    var_3: "I'm the value of variable 3"
+  tasks:
+    - name: Print the name and value of the first variable
+      ansible.builtin.debug:
+        msg: "The variable 'var_1' has the value: {{ var_1 }}"
+
+    - name: Print the name and value of the second variable
+      ansible.builtin.debug:
+        msg: "The variable 'var_2' has the value: {{ var_2 }}"
+
+    - name: Print the name and value of the third variable
+      ansible.builtin.debug:
+        msg: "The variable 'var_3' has the value: {{ var_3 }}"
